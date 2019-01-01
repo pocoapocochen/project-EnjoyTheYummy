@@ -536,6 +536,11 @@ body {
         width: 8rem;
     }
 
+    .recipe__info-name {
+        font-size: 1.8rem;
+        line-height: normal;
+    }
+
     .recipe__info-instru {
         justify-content: space-around;
 
