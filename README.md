@@ -2,6 +2,11 @@
 * A recipe searching webpage
 * [Live](https://pocoapocochen.github.io/project-EnjoyTheYummy/) version
 
+## User Story
+* I can search for recipes by ingredient.
+* I can see diffrent pages of results.
+* If there's no searching result, I can see the information.
+
 ## Using
 * HTML
 * CSS (flexbox, variable, animation)
