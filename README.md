@@ -1,14 +1,12 @@
 # project-EnjoyTheYummy
-* A recipe searching webpage
 * [Live](https://pocoapocochen.github.io/project-EnjoyTheYummy/) version
-
+* A recipe searching webpage
 
 ## Using
 * HTML
 * CSS (flexbox, variable, animation)
 * JavaScript (ES6, MVC pattern)
-* Font Awesome
-* Weather Icons
+* IcoMoon SVG Icon
 * TheMealDB API
 
 ## Note
