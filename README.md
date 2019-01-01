@@ -9,7 +9,7 @@
 
 ## Using
 * HTML
-* CSS (flexbox, variable, animation)
+* CSS (flexbox, variables, animation)
 * JavaScript (ES6, MVC pattern)
 * IcoMoon SVG Icon
 * TheMealDB API
