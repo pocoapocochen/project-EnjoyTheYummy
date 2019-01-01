@@ -1,6 +1,6 @@
 # project-EnjoyTheYummy
-* [Live](https://pocoapocochen.github.io/project-EnjoyTheYummy/) version
 * A recipe searching webpage
+* [Live](https://pocoapocochen.github.io/project-EnjoyTheYummy/) version
 
 ## Using
 * HTML
