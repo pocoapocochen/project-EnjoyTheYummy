@@ -1,3 +1,6 @@
+// try to use Promise instead of Async/Await
+
+///////////////////////////////
 import axios from 'axios';
 
 
@@ -10,7 +13,7 @@ const dataController = (() => {
             this.query = query;
         }
     
-        async getResults() {
+        /* async getResults() {
             try {
                 const res = await axios (`https://www.themealdb.com/api/json/v1/1/filter.php?i=${this.query}`);
                 
@@ -19,25 +22,64 @@ const dataController = (() => {
             } catch(error) {
                 alert(error);
             }
-        };
+        }; */
 
-        async getDetails() {
+        getResults() {
+            return axios (`https://www.themealdb.com/api/json/v1/1/filter.php?i=${this.query}`)
+            .then(res => {
+                this.resultsData = res.data.meals;   
+            })
+            .catch(error => alert(error));
+        }
+
+
+        /* async getDetails() {
             if (this.resultsData !== null) {
                 this.id = this.resultsData.map(obj => obj.idMeal);
 
                 try {
+
                     this.detailsData = [];
                     for (let i = 0 ; i < this.id.length; i++) {
                         const res = await axios (`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${this.id[i]}`);
   
                         this.detailsData[i] = res.data.meals[0]; // 'meals': [{...}]
                     }
-
+                    
                 } catch(error) {
                     alert(error);
                 }
             }
-        };
+        }; */
+
+        getDetails() {
+            if (this.resultsData !== null) {
+                this.id = this.resultsData.map(obj => obj.idMeal);
+                
+                this.detailsData = [];
+                let acc = Promise.resolve(); // set the init value and store the accumulated value 
+                for (let i = 0 ; i < this.id.length; i++) {
+                    acc = acc.then((res) => { 
+
+                        if (i >= 1) {
+                            this.detailsData[i-1] = res.data.meals[0];
+                        }
+
+                        return axios (`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${this.id[i]}`);
+
+                    });
+                }   
+       
+                return acc
+                .then((res) => {
+                    this.detailsData[this.id.length - 1] = res.data.meals[0]; 
+                    // remember to deal the last one item of array
+                })
+                .catch( error => alert(error)); 
+            }   
+            
+       }; 
+
     }
 
 
@@ -51,6 +93,8 @@ const dataController = (() => {
     };
 
 })();
+
+
 
 
 
@@ -247,10 +291,10 @@ const uiController = (() => {
 //store state
 const state = {};
 
-const appController = async (dataCtrl, uiCtrl) => {
+/* const appController = async (dataCtrl, uiCtrl) => {
   
     //1. get input value from VIEW
-    const query = uiCtrl.getInputs();
+    const query = uiCtrl.getInputs(); 
 
     if (query){
         //2. use the input value to create a New search object and add to state
@@ -287,6 +331,57 @@ const appController = async (dataCtrl, uiCtrl) => {
             uiCtrl.clearLoader(); // clear loading spinner
             uiCtrl.renderMsg(query);//render no result message
         }
+    }
+}; */
+
+const appController = (dataCtrl, uiCtrl) => {
+  
+    //1. get input value from VIEW
+    const query = uiCtrl.getInputs();
+
+    if (query){
+        //2. use the input value to create a New search object and add to state
+        state.search = dataCtrl.getSearch(query);
+ 
+        //3. prepare UI for search results
+        uiCtrl.clearInputs(); //clear the input field
+        uiCtrl.clearMsg(); // clear no result message
+        uiCtrl.clearResults(); //clear the result area
+
+        uiCtrl.renderLoader(); //render loading spinner 
+
+
+        //4. get search results data from MODEL
+        const getResultsFuc = state.search.getResults();
+        
+        getResultsFuc
+        .then(() => {
+            const overview = state.search.resultsData;
+
+            // 5. if there is no result, then render the message to VIEW
+            if (overview === null) {
+                uiCtrl.clearLoader(); // clear loading spinner
+                uiCtrl.renderMsg(query);//render no result message
+            } else {   
+                const getDetailsFunc = state.search.getDetails();
+                return getDetailsFunc;  
+            }
+        })
+        .then(() => {
+            const recipe = state.search.detailsData;
+            
+            //6. render results to VIEW
+            uiCtrl.clearMsg(); // clear no result message
+            uiCtrl.clearLoader(); // clear loading spinner
+
+            uiCtrl.renderResults(recipe); //render result
+            }
+        )
+        .catch( error => {
+            uiCtrl.clearLoader(); // clear loading spinner
+            uiCtrl.renderMsg(query);//render no result message
+        })
+
     }
 };
 
