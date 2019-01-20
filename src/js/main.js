@@ -26,14 +26,11 @@ const dataController = (() => {
                 this.id = this.resultsData.map(obj => obj.idMeal);
 
                 try {
-                    const res = await axios (`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${this.id[0]}`);
-
-                    this.detailsData = res.data.meals;
-
-                    for (let i = 1 ; i < this.id.length; i++) {
+                    this.detailsData = [];
+                    for (let i = 0 ; i < this.id.length; i++) {
                         const res = await axios (`https://www.themealdb.com/api/json/v1/1/lookup.php?i=${this.id[i]}`);
-
-                        this.detailsData[i] = res.data.meals[0];
+  
+                        this.detailsData[i] = res.data.meals[0]; // 'meals': [{...}]
                     }
 
                 } catch(error) {
